@@ -1,0 +1,1 @@
+/bin/x86_64-pc-linux-gnu-c++ -g -rdynamic CMakeFiles/painter.dir/FlappyBird.cpp.o CMakeFiles/painter.dir/ai.cpp.o CMakeFiles/painter.dir/bird.cpp.o CMakeFiles/painter.dir/game.cpp.o CMakeFiles/painter.dir/neuron.cpp.o CMakeFiles/painter.dir/pipe.cpp.o -o painter  /usr/lib/libsfml-graphics.so.2.6.1 /usr/lib/libsfml-window.so.2.6.1 /usr/lib/libsfml-system.so.2.6.1

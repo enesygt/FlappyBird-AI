@@ -18,6 +18,7 @@ public:
   neuron m_neuron;
   bool is_bird_live;
   size_t training{};
+  int last_measure{};
 
 private:
   sf::Texture birdTexture;

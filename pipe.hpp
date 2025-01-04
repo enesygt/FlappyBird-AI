@@ -15,7 +15,7 @@ public:
   std::array<float, 2>
   calculateFirstPipeDistance(const sf::Sprite &object) const;
   void pipeReset();
-  bool scoreCheck(sf::Sprite &object);
+  bool scoreCheck(sf::Sprite &object, int &last_measure);
 
 private:
   void pipeMove();

@@ -37,6 +37,7 @@ void neuron::predict(std::array<float, 3> inputs) {
       calc += rows[i] * inputs[i];
     }
     first_layer[k] = sigmoid(calc);
+    ++k;
   }
 
   for (int i = 0; i < 7; ++i) {

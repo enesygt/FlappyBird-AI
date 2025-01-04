@@ -10,6 +10,9 @@ ai::ai() {
   }
 }
 void ai::startAi() {
+
+  std::cout << "Highest score: " << m_highest_score << std::endl;
+  std::cout << "Generation: " << generation_counter << std::endl;
   aiLearningStart();
   for (auto &bird : m_birds) {
     bird.birdSprite.setPosition(200, 250);
@@ -59,45 +62,50 @@ void ai::calculatePipe(const pipe &game_pipes) {
 }
 
 void ai::pipeCollisionCheck(pipe &game_pipes) {
-  for (auto it = m_birds.begin(); it != m_birds.end(); ++it) {
-    if (game_pipes.collisionCheck((*it).birdSprite)) {
+  for (int i = 0; i < 300; ++i) {
+    if (game_pipes.collisionCheck(m_birds[i].birdSprite)) {
       // Todo: Try to disapper birds instead of erasing
-      (*it).is_bird_live = false;
+      m_birds[i].is_bird_live = false;
     }
   }
 }
 
 void ai::scoreCheck(pipe &game_pipes) {
   size_t biggest_score = 0;
-  for (auto &bird : m_birds) {
-    if (bird.is_bird_live && game_pipes.scoreCheck(bird.birdSprite)) {
-      ++bird.training;
+  static size_t current_score = 0;
+  for (int i = 0; i < 300; ++i) {
+    if (m_birds[i].is_bird_live &&
+        game_pipes.scoreCheck(m_birds[i].birdSprite, m_birds[i].last_measure)) {
+      m_birds[i].training += 1;
     }
-    if (bird.training > biggest_score) {
+    if (m_birds[i].training > biggest_score) {
       // std::cout << "Score: " << bird.training << std::endl;
-      biggest_score = bird.training;
+      biggest_score = m_birds[i].training;
     }
   }
   if (biggest_score > m_highest_score)
     m_highest_score = biggest_score;
-  std::cout << "Highest score: " << m_highest_score << std::endl;
-  std::cout << "Current score: " << biggest_score << std::endl;
-  std::cout << "Generation: " << generation_counter << std::endl;
+  if (current_score != biggest_score) {
+    current_score = biggest_score;
+    std::cout << "Current score: " << current_score << std::endl;
+  }
 }
 
 void ai::aiLearningStart() {
   std::sort(m_birds.begin(), m_birds.end(), [](const bird &a, const bird &b) {
     return a.training > b.training;
   });
+  for (int i = 0; i < 6; ++i)
+    std::cout << i << " bird score: " << m_birds[i].training << std::endl;
+  m_best_birds.clear();
+  m_best_birds.resize(4);
+  std::copy(m_birds.begin(), m_birds.begin() + 3, m_best_birds.begin());
 
-  m_best_birds.resize(20);
-  std::copy(m_birds.begin(), m_birds.begin() + 6, m_best_birds.begin());
-
-  for (auto it = m_birds.begin() + 6; it != m_birds.end(); ++it) {
-    int rand_1 = neuron::random_number_generator(0, 5);
-    int rand_2 = neuron::random_number_generator(0, 5);
+  for (int i = 3; i < 300; ++i) {
+    int rand_1 = neuron::random_number_generator(0, 3);
+    int rand_2 = neuron::random_number_generator(0, 3);
     bird child_bird = crossOver(m_best_birds[rand_1], m_best_birds[rand_2]);
-    (*it).m_neuron = child_bird.m_neuron;
+    m_birds[i].m_neuron = child_bird.m_neuron;
   }
 }
 
@@ -107,7 +115,6 @@ bird ai::crossOver(const bird &b1, const bird &b2) {
   for (int i = 0; i < 7; ++i) {
     for (int j = 0; j < 3; ++j) {
       double possibility = neuron::random_number_generator(0.0, 1.0);
-
       if (possibility < 0.47)
         child_bird.m_neuron.m_weigth1[i][j] = b1.m_neuron.m_weigth1[i][j];
       else if (possibility < 0.94)

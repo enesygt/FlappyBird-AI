@@ -73,8 +73,7 @@ bool pipe::collisionCheck(const sf::Sprite &object) {
 
 void pipe::pipeReset() { pipeVec.clear(); }
 
-bool pipe::scoreCheck(sf::Sprite &object) {
-  static int last_measure = 0;
+bool pipe::scoreCheck(sf::Sprite &object, int &last_measure) {
   for (auto spriteVec : pipeVec) {
     for (auto sprite : spriteVec) {
       int x = object.getPosition().x - sprite.getPosition().x;
